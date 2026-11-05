@@ -1,5 +1,7 @@
 # TM Polgar Dashboard – Kezdőlap
 
+[![Tesztek](https://github.com/gypolgar/tm-polgar-dashboard/actions/workflows/tests.yml/badge.svg)](https://github.com/gypolgar/tm-polgar-dashboard/actions/workflows/tests.yml)
+
 Saját kezdőlap böngésző-kiegészítő Chrome-hoz: a mentett oldalakat csoportokba
 rendezi, és kezeli a megnyitott lapok, valamint a teljes gyűjtemény
 exportját/importját. A felület magyar nyelvű.
@@ -178,6 +180,9 @@ python tests\run_tests.py --only popup
 ```
 
 Részletek: [tests/README.md](tests/README.md).
+
+Minden `main` ágra történő push-nál (és pull requestnél) a tesztek automatikusan
+lefutnak a GitHub Actions-ben is: [Tesztek workflow](https://github.com/gypolgar/tm-polgar-dashboard/actions/workflows/tests.yml).
 
 ## Tippek
 

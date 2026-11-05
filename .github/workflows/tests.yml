@@ -1,0 +1,34 @@
+name: Tesztek
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Repó letöltése
+        uses: actions/checkout@v4
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Chrome ellenőrzése
+        run: google-chrome --version
+
+      - name: Böngészős tesztek
+        run: python tests/run_tests.py
