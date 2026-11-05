@@ -1,0 +1,18 @@
+# Teszt build és ideiglenes fájlok
+tests/_build/
+*.log
+*.tmp
+
+# Csomagolási maradványok (a .pem a kiegészítő aláírókulcsa, ne kerüljön fel)
+*.crx
+*.pem
+*.zip
+
+# Rendszerfájlok
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Szerkesztő
+.vscode/
+.idea/

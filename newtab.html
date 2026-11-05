@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TM Polgar Dashboard – Kezdőlap</title>
+  <link rel="icon" href="icons/icon32.png">
+  <link rel="stylesheet" href="lib/theme.css">
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="icons/icon32.png" alt="" width="30" height="30">
+        <div class="brand-text">
+          <strong>TM Polgar Dashboard</strong>
+          <span>kezdőlap</span>
+        </div>
+      </div>
+
+      <button id="btnNewGroup" class="btn btn-ghost btn-block" type="button">
+        <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Új csoport
+      </button>
+
+      <nav id="groups" class="groups" aria-label="Csoportok"></nav>
+
+      <div class="sidebar-footer">
+        <button id="btnData" class="btn btn-ghost" type="button">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v14c0 1.7 3.1 3 7 3s7-1.3 7-3V5"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>
+          Adatkezelés
+        </button>
+        <button id="btnSettings" class="btn btn-ghost" type="button">
+          <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/><circle cx="9" cy="8" r="2.4"/><circle cx="15" cy="16" r="2.4"/></svg>
+          Beállítások
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="titles">
+          <h1>
+            <span id="viewDot" class="dot hidden"></span>
+            <span id="viewTitle">Összes oldal</span>
+          </h1>
+          <p id="viewSubtitle" class="subtitle"></p>
+        </div>
+
+        <div class="search">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4.5 4.5"/></svg>
+          <input id="search" type="search" placeholder="Keresés a mentett oldalak között…" aria-label="Keresés a mentett oldalak között" autocomplete="off" spellcheck="false">
+          <kbd>/</kbd>
+        </div>
+
+        <div class="top-actions">
+          <div id="viewActions" class="view-actions"></div>
+          <button id="btnAddItem" class="btn btn-primary" type="button">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            Oldal
+          </button>
+        </div>
+      </header>
+
+      <div id="content" class="content"></div>
+    </main>
+  </div>
+
+  <!-- Csoport létrehozása / szerkesztése -->
+  <dialog id="dlgGroup">
+    <form id="groupForm" class="dialog-body" novalidate>
+      <h2 id="dlgGroupTitle">Új csoport</h2>
+      <label class="field">
+        <span>Csoport neve</span>
+        <input id="groupName" type="text" maxlength="80" placeholder="pl. Munka, Tanulás, Receptek" autocomplete="off">
+      </label>
+      <div class="field">
+        <span>Szín</span>
+        <div id="groupColors" class="swatches" role="group" aria-label="Csoport színe"></div>
+      </div>
+      <p id="groupError" class="error" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Mégse</button>
+        <button type="submit" class="btn btn-primary">Mentés</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Oldal hozzáadása / szerkesztése -->
+  <dialog id="dlgItem">
+    <form id="itemForm" class="dialog-body" novalidate>
+      <h2 id="dlgItemTitle">Oldal hozzáadása</h2>
+      <label class="field">
+        <span>Cím</span>
+        <input id="itemTitle" type="text" maxlength="300" placeholder="Az oldal címe" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Hivatkozás (URL)</span>
+        <input id="itemUrl" type="text" placeholder="https://pelda.hu" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="field">
+        <span>Csoport</span>
+        <select id="itemGroup"></select>
+      </label>
+      <p id="itemError" class="error" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Mégse</button>
+        <button type="submit" class="btn btn-primary">Mentés</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Beállítások -->
+  <dialog id="dlgSettings">
+    <form id="settingsForm" class="dialog-body">
+      <h2>Beállítások</h2>
+
+      <div class="field-row">
+        <div class="field-row-text">
+          <strong>Megnyitás Chrome indításakor</strong>
+          <p class="hint">Indításkor automatikusan megnyit egy kezdőlapot, ha még nincs nyitva.</p>
+        </div>
+        <label class="switch">
+          <input id="setStartup" type="checkbox">
+          <span></span>
+        </label>
+      </div>
+
+      <div class="field-row">
+        <div class="field-row-text">
+          <strong>Megerősítés törlés előtt</strong>
+          <p class="hint">Csoport törlése mindig kér megerősítést, az oldalaknál viszont van visszavonás.</p>
+        </div>
+        <label class="switch">
+          <input id="setConfirm" type="checkbox">
+          <span></span>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Megjelenés</span>
+        <select id="setTheme">
+          <option value="system">Rendszer szerint</option>
+          <option value="light">Világos</option>
+          <option value="dark">Sötét</option>
+        </select>
+      </label>
+
+      <p class="hint">
+        Tipp: a Chrome beállításaiban (Indításkor → Új lap megnyitása) is beállítható,
+        hogy a kezdőlap legyen az első oldal. A kiegészítő emellett minden új lapon
+        automatikusan ezt a felületet nyitja meg.
+      </p>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Bezárás</button>
+        <button type="submit" class="btn btn-primary">Mentés</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Adatkezelés: megnyitott lapok, import, mentés -->
+  <dialog id="dlgData" class="dialog-wide">
+    <div class="dialog-body">
+      <h2>Adatkezelés</h2>
+
+      <div class="tabs" role="tablist" aria-label="Adatkezelés szakaszai">
+        <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="tabs">Megnyitott lapok</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="import">Importálás</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="backup">Mentés / export</button>
+      </div>
+
+      <section class="tab-panel" data-panel="tabs" role="tabpanel">
+        <div class="data-row">
+          <label class="field inline">
+            <span>Hatókör</span>
+            <select id="tabsScope">
+              <option value="current">Aktuális ablak</option>
+              <option value="all">Minden ablak</option>
+            </select>
+          </label>
+          <label class="check">
+            <input id="tabsSelectAll" type="checkbox" checked>
+            Összes kijelölése
+          </label>
+          <span id="tabsCount" class="hint"></span>
+        </div>
+
+        <div id="tabsList" class="tabs-list" aria-label="Megnyitott lapok"></div>
+
+        <div class="data-row wrap">
+          <label class="field inline">
+            <span>Mentés ide</span>
+            <select id="saveTarget"></select>
+          </label>
+          <button id="btnSaveTabs" class="btn btn-primary" type="button">Kijelöltek mentése</button>
+          <span class="spacer"></span>
+          <button id="btnExportTabsJson" class="btn" type="button">Export JSON</button>
+          <button id="btnExportTabsHtml" class="btn" type="button">Export HTML</button>
+        </div>
+        <p class="hint">
+          A kijelölt lapok exportálhatók JSON-fájlba (ezt a kiegészítő vissza is tudja
+          importálni), vagy HTML könyvjelzőfájlba, amely a Chrome-ba közvetlenül beolvasható.
+        </p>
+      </section>
+
+      <section class="tab-panel hidden" data-panel="import" role="tabpanel">
+        <div id="dropZone" class="dropzone">
+          <svg class="icon dropzone-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 20h16"/></svg>
+          <p><strong>Húzd ide a fájlt</strong>, vagy válaszd ki innen:</p>
+          <button id="btnPickFile" class="btn" type="button">Fájl kiválasztása</button>
+          <p class="hint">JSON-mentés vagy HTML könyvjelzőfájl (.json, .html)</p>
+          <p id="importError" class="error" hidden></p>
+        </div>
+
+        <div id="importPreview" class="hidden">
+          <div class="import-summary">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+            <div>
+              <strong id="importFileName"></strong>
+              <p id="importSummary" class="hint"></p>
+            </div>
+          </div>
+          <div class="radio-col">
+            <label class="check">
+              <input type="radio" name="importMode" value="merge" checked>
+              Hozzáadás a meglévő csoportokhoz
+            </label>
+            <label class="check">
+              <input type="radio" name="importMode" value="replace">
+              Csere – a jelenlegi csoportok törlése
+            </label>
+          </div>
+          <div class="dialog-actions">
+            <button id="btnCancelImport" class="btn" type="button">Mégse</button>
+            <button id="btnDoImport" class="btn btn-primary" type="button">Importálás</button>
+          </div>
+        </div>
+
+        <p class="hint">
+          Támogatott: a kiegészítő saját JSON-mentése, a „Megnyitott lapok” exportja,
+          Chrome/Firefox könyvjelző HTML, illetve egyszerű URL-listát tartalmazó JSON.
+          Saját mentés csere módban a beállításokat is visszaállítja.
+        </p>
+      </section>
+
+      <section class="tab-panel hidden" data-panel="backup" role="tabpanel">
+        <p class="hint">
+          A JSON-mentés a csoportokat, a mentett oldalakat és a beállításokat
+          tartalmazza egyetlen fájlban, és az „Importálás” fülön állítható vissza.
+          A HTML-változat Netscape könyvjelzőfájl, amely a Chrome-ba – vagy más
+          böngészőbe – közvetlenül beolvasható, és a kiegészítő is vissza tudja
+          importálni.
+        </p>
+        <div class="data-row wrap">
+          <button id="btnBackup" class="btn btn-primary" type="button">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg>
+            Gyűjtemény mentése (JSON)
+          </button>
+          <button id="btnExportCollectionHtml" class="btn" type="button">
+            <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></svg>
+            Könyvjelzők exportálása (HTML)
+          </button>
+          <button id="btnGoImport" class="btn" type="button">Importálás / visszaállítás…</button>
+        </div>
+        <p class="hint">
+          Tipp: a fájlt érdemes rendszeresen lementeni, mert a kiegészítő adatai a
+          böngésző tárolójában vannak.
+        </p>
+      </section>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Bezárás</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Megerősítés -->
+  <dialog id="dlgConfirm">
+    <div class="dialog-body">
+      <h2 id="confirmTitle">Biztos?</h2>
+      <p id="confirmText" class="confirm-text"></p>
+      <div class="dialog-actions">
+        <button id="confirmCancel" class="btn" type="button">Mégse</button>
+        <button id="confirmOk" class="btn btn-danger" type="button">Törlés</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <input type="file" id="fileInput" accept=".json,.html,.htm,application/json,text/html" hidden>
+
+  <script type="module" src="newtab.js"></script>
+</body>
+</html>

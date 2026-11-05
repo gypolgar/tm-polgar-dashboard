@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "TM Polgar Dashboard – Kezdőlap",
+  "short_name": "TM Polgar",
+  "version": "1.0.0",
+  "description": "Saját kezdőlap csoportosított mentett oldalakkal, valamint a megnyitott lapok exportjával és importjával.",
+  "minimum_chrome_version": "104",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Oldal mentése a gyűjteménybe",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus",
+    "favicon"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}

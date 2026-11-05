@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oldal mentése</title>
+  <link rel="stylesheet" href="lib/theme.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="pop-head">
+    <img src="icons/icon32.png" alt="" width="22" height="22">
+    <strong>Oldal mentése</strong>
+  </header>
+
+  <div class="pop-body">
+    <div class="page-row">
+      <div id="pageFavicon" class="page-favicon"></div>
+      <div class="page-text">
+        <p id="pageTitle" class="page-title">Betöltés…</p>
+        <span id="pageHost" class="page-host"></span>
+      </div>
+    </div>
+
+    <p id="savedHint" class="saved-hint hidden"></p>
+
+    <div class="field">
+      <span>Csoport</span>
+      <div class="select-row">
+        <select id="groupSelect" aria-label="Csoport kiválasztása"></select>
+        <button id="btnQuickGroup" class="icon-btn" type="button" title="Új csoport" aria-label="Új csoport">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="newGroupRow" class="new-group hidden">
+      <input id="newGroupName" type="text" maxlength="80" placeholder="Új csoport neve" autocomplete="off">
+      <button id="btnCreateGroup" class="btn" type="button">Létrehozás</button>
+    </div>
+
+    <label class="field">
+      <span>Cím</span>
+      <input id="titleInput" type="text" maxlength="300" autocomplete="off" placeholder="Az oldal címe">
+    </label>
+
+    <p id="error" class="error hidden"></p>
+
+    <div class="pop-actions">
+      <button id="btnSave" class="btn btn-primary btn-block" type="button">Mentés</button>
+      <button id="btnOpen" class="btn btn-block" type="button">Gyűjtemény megnyitása</button>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

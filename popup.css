@@ -1,0 +1,165 @@
+/* Felugró ablak (eszköztár-ikon). */
+
+body {
+  width: 344px;
+  background: var(--bg-elevated);
+}
+
+.pop-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pop-head img {
+  border-radius: 6px;
+}
+
+.pop-head strong {
+  font-size: 13.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.pop-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.page-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.page-favicon {
+  flex: none;
+}
+
+.page-favicon .favicon {
+  width: 34px;
+  height: 34px;
+}
+
+.page-favicon .favicon img {
+  width: 22px;
+  height: 22px;
+}
+
+.page-text {
+  min-width: 0;
+}
+
+.page-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  word-break: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.page-host {
+  display: block;
+  margin-top: 1px;
+  overflow: hidden;
+  color: var(--text-faint);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-hint {
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.select-row {
+  display: flex;
+  gap: 6px;
+}
+
+.select-row select {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.select-row select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.select-row .icon-btn {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.select-row .icon-btn:hover {
+  background: var(--bg-soft);
+}
+
+.new-group {
+  display: flex;
+  gap: 6px;
+  margin-top: -4px;
+}
+
+.new-group input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.new-group input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.new-group .btn {
+  height: 36px;
+  font-size: 12.5px;
+}
+
+.pop-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.pop-actions .btn {
+  height: 38px;
+}

@@ -1,0 +1,7 @@
+# Egységes LF sorvég minden gépen
+* text=auto eol=lf
+
+# Bináris fájlok
+*.png binary
+*.ico binary
+*.crx binary
