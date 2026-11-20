@@ -169,6 +169,7 @@
         <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="tabs">Megnyitott lapok</button>
         <button type="button" class="tab" role="tab" aria-selected="false" data-tab="import">Importálás</button>
         <button type="button" class="tab" role="tab" aria-selected="false" data-tab="backup">Mentés / export</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="drive">Drive-szinkron</button>
       </div>
 
       <section class="tab-panel" data-panel="tabs" role="tabpanel">
@@ -267,6 +268,27 @@
         <p class="hint">
           Tipp: a fájlt érdemes rendszeresen lementeni, mert a kiegészítő adatai a
           böngésző tárolójában vannak.
+        </p>
+      </section>
+
+      <section class="tab-panel hidden" data-panel="drive" role="tabpanel">
+        <p class="hint">
+          A gyűjtemény automatikusan szinkronizálódik a Google Drive rejtett,
+          alkalmazásspecifikus mappájába (<code>appDataFolder</code>). Ugyanazzal a
+          Google-fiókkal bejelentkezett, azonos azonosítójú kiegészítők így ugyanazt
+          a gyűjteményt használják gépről gépre.
+        </p>
+        <p id="driveStatus" class="hint">Állapot betöltése…</p>
+        <p id="driveError" class="error" hidden></p>
+        <div class="data-row wrap">
+          <button id="btnDriveSync" class="btn btn-primary" type="button">Szinkronizálás most</button>
+          <button id="btnDrivePull" class="btn" type="button">Letöltés Drive-ról</button>
+          <button id="btnDrivePush" class="btn" type="button">Feltöltés Drive-ba</button>
+        </div>
+        <p class="hint">
+          A „Szinkronizálás most” automatikusan eldönti, hogy feltölt vagy letölt.
+          A külön gombokkal bármelyik irány kényszeríthető. A háttérben a szinkron
+          15 percenként, illetve minden helyi változás után magától lefut.
         </p>
       </section>
 

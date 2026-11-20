@@ -28,9 +28,21 @@
     "storage",
     "tabs",
     "contextMenus",
-    "favicon"
+    "favicon",
+    "identity",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.googleapis.com/*"
   ],
   "chrome_url_overrides": {
     "newtab": "newtab.html"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuPuujyDSanqHq2YKzR0TMegEqoYf+XULuhoSAogRc5ryKseQoCPpE9EtCW4QhBXIs2Jidz0/Xh/dogTnCPNragxbRs0JZFwZq35JZfnSJi94d67QeMcqmtgmmiMni3C9lABUZs4A4NGC8p3B3grG9+QMVRtlGkPjMjnluNDfkhcphuRXrr2bc62tDIBaIuV8KaefcM2PkIJlqXheU5nMKvNAYr/k39E5eyW34rB4PBHTyfVy0GKFYOGLKIln8NbrF5BjIv/RUfvmhgAtf1eqFdHMDh1f8MebJWAYeyfCkSs+nBz0OjG+4rd/20naQ+144XTm1CgUFtJLo9RSHnPy+wIDAQAB",
+  "oauth2": {
+    "client_id": "REPLACE_ME.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/drive.appdata"
+    ]
   }
 }

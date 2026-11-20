@@ -52,6 +52,7 @@ TEST_FILES = (
     "test-add-driver.js",
     "test-popup-driver.js",
     "test-popup-blocked.js",
+    "test-drive-driver.js",
 )
 
 NEWTAB_MARKER = '<script type="module" src="newtab.js"></script>'
@@ -94,6 +95,12 @@ SUITES = (
         "key": "add",
         "title": "előre kitöltött hozzáadás",
         "page": "test-add.html" + ADD_QUERY,
+        "budget": 15000,
+    },
+    {
+        "key": "drive",
+        "title": "Drive szinkron döntési logikája",
+        "page": "test-drive.html",
         "budget": 15000,
     },
 )
@@ -151,6 +158,19 @@ def build_harnesses() -> None:
             '  <script src="mock.js"></script>\n'
             '  <script type="module" src="background.js"></script>\n'
             '  <script type="module" src="test-background-driver.js"></script>\n'
+            "</body>\n"
+            "</html>\n"
+        ),
+        "test-drive.html": (
+            "<!DOCTYPE html>\n"
+            '<html lang="hu">\n'
+            "<head>\n"
+            '  <meta charset="utf-8">\n'
+            "  <title>Drive teszt</title>\n"
+            "</head>\n"
+            "<body>\n"
+            '  <script src="mock.js"></script>\n'
+            '  <script type="module" src="test-drive-driver.js"></script>\n'
             "</body>\n"
             "</html>\n"
         ),

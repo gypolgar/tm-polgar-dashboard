@@ -138,11 +138,71 @@ beállításokat is visszaállítja. Éles adatoknál mindig készíts előbb me
   menüpontot jelenít meg a kiegészítőtől, ezért a hozzáadás és a csoportok is a
   **Mentés a gyűjteménybe** alatt találhatók.
 
+## Google Drive szinkron
+
+A gyűjtemény ugyanabban a Chrome-profilban, több gépen is ugyanaz marad: a
+kiegészítő a `collection` értéket a Google Drive rejtett,
+alkalmazásspecifikus mappájába (`appDataFolder`) menti `collection.json` néven.
+A fájl nem jelenik meg a sima Drive-listában, de ugyanahhoz a Google-fiókhoz
+bejelentkezett gépek elérik.
+
+A szinkron automatikusan lefut:
+
+- minden helyi változás után 5 másodperccel,
+- 15 percenként,
+- a háttérszolgáltatás indításakor,
+- és kézzel az **Adatkezelés → Drive-szinkron** fülön.
+
+Ütközés esetén az újabb verzió nyer. A kézi fülön a **Letöltés Drive-ról** és
+**Feltöltés Drive-ba** gombokkal bármelyik irány kényszeríthető, és itt látható
+az utolsó szinkron ideje is.
+
+### Beállítás
+
+1. A `manifest.json`-ben szereplő `key` rögzíti a kiegészítő azonosítóját, hogy
+   az minden gépen ugyanaz legyen: `lijgfomocjgpopdohhdlhldfcbckbmnd`.
+   **Fontos:** ha a kiegészítőt most töltöd át ezzel a manifesttel, a régi
+   azonosító alatt tárolt gyűjtemény nem látszik. Előbb az **Adatkezelés →
+   Mentés / export** fülön exportáld a JSON-mentést, majd az új azonosítón
+   importáld vissza („Csere” módban).
+2. Nyisd meg a [Google Cloud Console](https://console.cloud.google.com/) oldalt,
+   és hozz létre egy projektet.
+3. Engedélyezd a **Google Drive API**-t: *APIs & Services → Library →
+   Google Drive API → Enable*.
+4. Állítsd be a hozzájárulási képernyőt (*OAuth consent screen*): válassz
+   **External** típust, és add hozzá a saját e-mail-címedet a **Test users**
+   listához. A szükséges scope
+   (`https://www.googleapis.com/auth/drive.appdata`) már szerepel a
+   `manifest.json`-ben.
+5. Hozz létre OAuth klienst: *APIs & Services → Credentials → Create Credentials
+   → OAuth client ID*. Application type: **Chrome extension**.
+   - Application ID: `lijgfomocjgpopdohhdlhldfcbckbmnd`
+   - Az átirányítási URL: `https://lijgfomocjgpopdohhdlhldfcbckbmnd.chromiumapp.org/`
+6. Másold a kapott kliens azonosítót (`…apps.googleusercontent.com`) a
+   `manifest.json` `oauth2.client_id` mezőjébe, a `REPLACE_ME…` helyére.
+7. A `chrome://extensions` oldalon töltsd újra a kiegészítőt.
+8. Nyisd meg az **Adatkezelés → Drive-szinkron** fület, és kattints a
+   **Szinkronizálás most** gombra – ilyenkor kér először bejelentkezést a Google.
+
+A kliens azonosító és a manifest `key` mezője nyilvános adat; a hozzá tartozó
+magánkulcs nem kerül be a repóba.
+
+### Másik gépen
+
+1. Klónozd a repót: `git clone https://github.com/gypolgar/tm-polgar-dashboard.git`.
+2. Használd ugyanaz a `manifest.json`-t (a kliens azonosítóval), így az
+   extension ID is ugyanaz marad.
+3. Töltsd be kicsomagolt kiegészítőként, és jelentkezz be ugyanazzal a
+   Google-fiókkal.
+4. Az **Adatkezelés → Drive-szinkron → Letöltés Drive-ról** gombbal hozd le az
+   adatokat. Indításkor az automatikus szinkron is megteszi ezt.
+
 ## Adattárolás és engedélyek
 
 Az adatok a `chrome.storage.local` tárhelyen, a `collection` kulcs alatt
-találhatók. A kiegészítő nem küld adatot hálózatra, és nem használ távoli
-szervert.
+találhatók. Google Drive szinkron nélkül a kiegészítő nem küld adatot hálózatra;
+a szinkron bekapcsolása után a gyűjtemény csak a saját Drive-fiókod rejtett
+mappájába kerül.
 
 | Engedély | Miért kell |
 | --- | --- |
@@ -150,6 +210,11 @@ szervert.
 | `tabs` | A megnyitott lapok listázása, mentése és megnyitása. |
 | `contextMenus` | A jobb gombos „Mentés a gyűjteménybe” menü. |
 | `favicon` | Az oldalak ikonjainak helyi, gyorsítótárazott megjelenítése. |
+| `identity` | Bejelentkezés a Google-fiókba a Drive-szinkronhoz. |
+| `alarms` | A szinkron 15 perces ütemezése. |
+
+A Drive API eléréséhez a `oauth2.scopes` mező a
+`https://www.googleapis.com/auth/drive.appdata` jogosultságot kéri.
 
 A `chrome://` oldalak és a Chrome belső felületei biztonsági okból nem
 menthetők.
@@ -163,6 +228,7 @@ newtab.html/.css/.js   kezdőlap (fő felület)
 popup.html/.css/.js    eszköztár felugró ablak
 lib/store.js           adatmodell, normalizálás, tárolás
 lib/backup.js          export/import (JSON, könyvjelző HTML)
+lib/drive.js           Google Drive szinkron (appDataFolder, ütközéskezelés)
 lib/favicon.js         favicon és betűjel tartalék
 lib/theme.css          közös megjelenés
 icons/                 16/32/48/128 px ikonok

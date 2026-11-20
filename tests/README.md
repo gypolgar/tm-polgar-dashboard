@@ -44,8 +44,9 @@ ideiglenes Chrome-profilt indít. A `_build` eldobható, minden futás újraép�
 | `popup` | Eszköztár felugró ablak: mentés, új csoport, hibakezelés. |
 | `popup-blocked` | `chrome://` oldal esetén a mentés letiltása és a hibaüzenet. |
 | `add` | `?add=1&url=…&title=…` paraméterekkel nyitott, előre kitöltött hozzáadás, majd mentés. |
+| `drive` | A Drive-szinkron tiszta függvényei: hash, ütközési döntések (push/pull/none), kliens-beállítás felismerése. |
 
-Sikeres futás esetén a kimenet végén ez áll: `Összesen: 99 teszt, mind sikeres.`
+Sikeres futás esetén a kimenet végén ez áll: `Összesen: 109 teszt, mind sikeres.`
 Hiba esetén a futtató kiírja a hibás teszt jelentését, és `1`-es kilépési kóddal
 tér vissza (CI-hoz is használható).
 
@@ -56,6 +57,11 @@ tér vissza (CI-hoz is használható).
 - A letöltéseket nem írja lemezre: elfogja a `Blob`-ot, így a fájl tartalma
   közvetlenül ellenőrizhető (`window.__blobs`).
 - Nincs valódi hálózat, favicon-letöltés vagy Chrome-profil.
+- A `chrome.identity`, `chrome.alarms` és a `fetch` nincs utánozva: a Drive
+  szinkron ezért csak a tiszta döntési függvények szintjén van tesztelve. A mock
+  `getManifest()`-e nem tartalmaz `oauth2` mezőt, így a szinkron a tesztek alatt
+  mindenképpen kikapcsolt marad – még akkor is, ha a valódi manifest már tartalmazza
+  a kliens azonosítóját.
 - A valódi telepített kiegészítőt (jobb gombos menü, új lap, eszköztár-ikon)
   továbbra is érdemes kézzel is kipróbálni.
 

@@ -29,6 +29,8 @@ import {
   serializeBackup,
 } from './lib/backup.js';
 
+import { isDriveConfigured, syncCollection } from './lib/drive.js';
+
 /* ------------------------------------------------------------------ */
 /* Segédek                                                             */
 /* ------------------------------------------------------------------ */
@@ -178,6 +180,12 @@ const els = {
   btnBackup: document.getElementById('btnBackup'),
   btnExportCollectionHtml: document.getElementById('btnExportCollectionHtml'),
   btnGoImport: document.getElementById('btnGoImport'),
+
+  driveStatus: document.getElementById('driveStatus'),
+  driveError: document.getElementById('driveError'),
+  btnDriveSync: document.getElementById('btnDriveSync'),
+  btnDrivePull: document.getElementById('btnDrivePull'),
+  btnDrivePush: document.getElementById('btnDrivePush'),
 
   dlgConfirm: document.getElementById('dlgConfirm'),
   confirmTitle: document.getElementById('confirmTitle'),
@@ -872,6 +880,7 @@ function showTab(name) {
   for (const panel of els.dlgData.querySelectorAll('.tab-panel')) {
     panel.classList.toggle('hidden', panel.dataset.panel !== name);
   }
+  if (name === 'drive') refreshDriveStatus();
 }
 
 for (const tab of els.dlgData.querySelectorAll('.tab')) {
@@ -1047,6 +1056,62 @@ els.btnExportCollectionHtml.addEventListener('click', () => {
 });
 
 els.btnGoImport.addEventListener('click', () => showTab('import'));
+
+/* ------------------------------------------------------------------ */
+/* Google Drive szinkron                                               */
+/* ------------------------------------------------------------------ */
+
+async function refreshDriveStatus() {
+  if (!isDriveConfigured()) {
+    els.driveStatus.textContent =
+      'A Google-kapcsolat még nincs beállítva: a telepítési útmutató szerint ' +
+      'be kell írni az OAuth kliens azonosítóját a manifest.json-be, majd ' +
+      'újra kell tölteni a kiegészítőt.';
+    els.driveStatus.classList.add('error');
+    return;
+  }
+  els.driveStatus.classList.remove('error');
+
+  const stored = await chrome.storage.local.get('driveSync');
+  const meta = stored.driveSync;
+  if (!meta || !meta.lastSyncAt) {
+    els.driveStatus.textContent =
+      'A kapcsolat be van állítva, de még nem történt szinkronizálás.';
+    return;
+  }
+
+  const when = new Date(meta.lastSyncAt).toLocaleString('hu-HU');
+  els.driveStatus.textContent = `Utolsó szinkronizálás: ${when}.`;
+}
+
+function setDriveError(message) {
+  els.driveError.textContent = message || '';
+  els.driveError.hidden = !message;
+}
+
+async function runDriveSync(mode) {
+  setDriveError('');
+  els.driveStatus.textContent = 'Szinkronizálás folyamatban…';
+
+  try {
+    const action = await syncCollection({ mode, interactive: true });
+    const messages = {
+      push: 'A gyűjtemény feltöltve a Drive-ba.',
+      pull: 'A gyűjtemény letöltve a Drive-ról.',
+      none: 'A gyűjtemény már egyezik a Drive-on.',
+    };
+    toast(messages[action] || 'Szinkronizálás kész.');
+    await refreshDriveStatus();
+  } catch (error) {
+    setDriveError(error.message || 'A szinkronizálás nem sikerült.');
+    els.driveStatus.textContent = 'A szinkronizálás nem sikerült.';
+    toast('A Drive-szinkron nem sikerült.', { duration: 6000 });
+  }
+}
+
+els.btnDriveSync.addEventListener('click', () => runDriveSync('auto'));
+els.btnDrivePull.addEventListener('click', () => runDriveSync('pull'));
+els.btnDrivePush.addEventListener('click', () => runDriveSync('push'));
 
 /* ------------------------------------------------------------------ */
 /* Importálás                                                          */

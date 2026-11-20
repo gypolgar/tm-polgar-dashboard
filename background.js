@@ -15,6 +15,8 @@ import {
   saveData,
 } from './lib/store.js';
 
+import { isDriveConfigured, syncCollection, SYNC_ALARM } from './lib/drive.js';
+
 const MENU_ADD = 'tm-polgar-add';
 const MENU_ROOT = 'tm-polgar-root';
 const MENU_SEPARATOR = 'tm-polgar-separator';
@@ -71,6 +73,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   menuRebuildTimer = setTimeout(() => {
     queueMenuRebuild();
   }, 250);
+  if (!changes.driveSync) queueDriveSync();
 });
 
 async function ensureSeed() {
@@ -211,13 +214,51 @@ async function maybeOpenDashboard() {
   await chrome.tabs.create({ url });
 }
 
+/* ------------------------------------------------------------------ */
+/* Google Drive szinkron                                               */
+/* ------------------------------------------------------------------ */
+
+let driveSyncTimer = null;
+
+async function maybeDriveSync() {
+  if (!isDriveConfigured()) return;
+  try {
+    await syncCollection({ mode: 'auto', interactive: false });
+  } catch (error) {
+    // Hálózati hiba vagy hiányzó bejelentkezés esetén a következő alarm újra próbálja.
+    console.warn('A Drive szinkron nem sikerült:', error.message);
+  }
+}
+
+function queueDriveSync() {
+  clearTimeout(driveSyncTimer);
+  driveSyncTimer = setTimeout(() => {
+    maybeDriveSync();
+  }, 5000);
+}
+
+function ensureSyncAlarm() {
+  if (!chrome.alarms || !chrome.alarms.create) return;
+  chrome.alarms.create(SYNC_ALARM, { periodInMinutes: 15 });
+}
+
+if (chrome.alarms && chrome.alarms.onAlarm) {
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === SYNC_ALARM) maybeDriveSync();
+  });
+}
+
 /*
  * A háttérszolgáltatás minden elindulásakor gondoskodunk az adatokról és a
  * jobb gombos menükről. Ez akkor is szükséges, ha a Chrome a szolgáltatást
  * leállította, vagy a kiegészítő újratöltése után nem fut le az onInstalled.
  */
 ensureSeed()
-  .then(() => queueMenuRebuild())
+  .then(() => {
+    queueMenuRebuild();
+    ensureSyncAlarm();
+    return maybeDriveSync();
+  })
   .catch((error) => {
     console.warn('A háttér inicializálása nem sikerült:', error);
   });
